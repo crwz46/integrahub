@@ -2,6 +2,8 @@ from typing import Any
 
 from app.adapters.base import BaseATSAdapter
 from app.adapters.greenhouse import GreenhouseAdapter
+from app.adapters.icims import ICIMSAdapter
+from app.adapters.lever import LeverAdapter
 from app.adapters.workday import WorkdayAdapter
 
 
@@ -9,6 +11,8 @@ class AdapterRegistry:
     _adapters: dict[str, type[BaseATSAdapter]] = {
         "workday": WorkdayAdapter,
         "greenhouse": GreenhouseAdapter,
+        "lever": LeverAdapter,
+        "icims": ICIMSAdapter,
     }
 
     @classmethod
@@ -23,10 +27,17 @@ class AdapterRegistry:
         return [
             {"provider": "workday", "name": WorkdayAdapter.name, "version": "v1"},
             {"provider": "greenhouse", "name": GreenhouseAdapter.name, "version": "v1"},
-            {"provider": "lever", "name": "Lever", "version": "v1"},
-            {"provider": "icims", "name": "iCIMS", "version": "v1"},
+            {"provider": "lever", "name": LeverAdapter.name, "version": "v1"},
+            {"provider": "icims", "name": ICIMSAdapter.name, "version": "v1"},
             {"provider": "custom", "name": "Custom API", "version": "v1"},
         ]
 
 
-__all__ = ["BaseATSAdapter", "AdapterRegistry", "WorkdayAdapter", "GreenhouseAdapter"]
+__all__ = [
+    "BaseATSAdapter",
+    "AdapterRegistry",
+    "WorkdayAdapter",
+    "GreenhouseAdapter",
+    "LeverAdapter",
+    "ICIMSAdapter",
+]

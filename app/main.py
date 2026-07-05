@@ -5,9 +5,13 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
+from collections import defaultdict
+from datetime import datetime, timezone
+
+from fastapi import FastAPI, HTTPException, Request, UploadFile, File, Depends
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from starlette.middleware.base import BaseHTTPMiddleware
 import jwt as pyjwt
 
 from app.api import integrations, jobs, webhooks, reports
@@ -40,6 +44,46 @@ security = HTTPBearer(auto_error=False)
 start_time = time.time()
 
 
+class RateLimitMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app, max_requests: int = 100, window_seconds: int = 60):
+        super().__init__(app)
+        self.max_requests = max_requests
+        self.window_seconds = window_seconds
+        self.requests: dict[str, list[float]] = defaultdict(list)
+
+    async def dispatch(self, request: Request, call_next):
+        client_ip = request.client.host if request.client else "unknown"
+        now = time.time()
+        window_start = now - self.window_seconds
+        self.requests[client_ip] = [t for t in self.requests[client_ip] if t > window_start]
+
+        if len(self.requests[client_ip]) >= self.max_requests:
+            return JSONResponse(
+                status_code=429,
+                content={"error": "rate_limit_exceeded", "message": f"Max {self.max_requests} requests per {self.window_seconds}s", "retry_after": self.window_seconds},
+                headers={"Retry-After": str(self.window_seconds)},
+            )
+
+        self.requests[client_ip].append(now)
+        response = await call_next(request)
+        response.headers["X-RateLimit-Limit"] = str(self.max_requests)
+        response.headers["X-RateLimit-Remaining"] = str(self.max_requests - len(self.requests[client_ip]))
+        return response
+
+
+class ErrorHandlerMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        try:
+            response = await call_next(request)
+            return response
+        except HTTPException:
+            raise
+        except ValueError as e:
+            return JSONResponse(status_code=422, content={"error": "validation_error", "message": str(e)})
+        except Exception as e:
+            return JSONResponse(status_code=500, content={"error": "internal_error", "message": str(e) if settings.debug else "Internal server error"})
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     jobs.start_worker()
@@ -56,7 +100,12 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
     openapi_url="/openapi.json",
+    contact={"name": "IntegraHub Team", "url": "https://github.com/crwz46/integrahub"},
+    license_info={"name": "MIT", "identifier": "MIT"},
 )
+
+app.add_middleware(RateLimitMiddleware, max_requests=200, window_seconds=60)
+app.add_middleware(ErrorHandlerMiddleware)
 
 app.include_router(integrations.router)
 app.include_router(jobs.router)

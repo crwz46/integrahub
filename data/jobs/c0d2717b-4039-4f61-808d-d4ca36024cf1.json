@@ -1,1 +1,0 @@
-{"id": "c0d2717b-4039-4f61-808d-d4ca36024cf1", "type": "ats_job", "payload": {"job_id": "job_821902f467f8", "integration_id": "int_0d3d8e38260d"}, "priority": 0, "attempts": 0, "max_attempts": 3, "created_at": "2026-07-05T09:09:46.694958+00:00", "updated_at": "2026-07-05T09:09:53.035392+00:00", "error": "'integration_id'", "status": "failed"}
