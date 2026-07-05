@@ -1,4 +1,3 @@
-import os
 import time
 import uuid
 from contextlib import asynccontextmanager
@@ -6,13 +5,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from collections import defaultdict
-from datetime import datetime, timezone
 
 from fastapi import FastAPI, HTTPException, Request, UploadFile, File, Depends
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.base import BaseHTTPMiddleware
-import jwt as pyjwt
 
 from app.api import integrations, jobs, webhooks, reports
 from app.config import settings

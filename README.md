@@ -4,6 +4,8 @@
 [![Python](https://img.shields.io/badge/Python-3.12-blue)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green)](https://fastapi.tiangolo.com)
 [![License](https://img.shields.io/badge/License-MIT-purple)](LICENSE)
+[![Postman](https://img.shields.io/badge/Postman-Collection-orange)](postman/IntegraHub.postman_collection.json)
+[![Deploy to Render](https://img.shields.io/badge/Render-Deploy-46E3B7)](https://render.com/deploy?repo=https://github.com/crwz46/integrahub)
 
 **IntegraHub** is a production-ready API integration gateway built with FastAPI. It demonstrates enterprise integration patterns for connecting ATS, HRIS, and third-party APIs — exactly the kind of system used by integration engineers at companies like Integrity Indonesia.
 
@@ -30,26 +32,7 @@
 
 ### Architecture
 
-```
-┌──────────────┐     ┌──────────────────┐     ┌──────────────┐
-│  Developer   │────▶│   IntegraHub     │────▶│  Workday      │
-│  Portal      │     │   Gateway         │     │  Greenhouse   │
-│  (HTML/JS)   │     │   (FastAPI)       │     │  Lever        │
-└──────────────┘     │                  │     │  iCIMS        │
-                     │  ┌────────────┐  │     │  Custom       │
-                     │  │ Rate Limit │  │     └──────────────┘
-                     │  │ Middleware │  │
-                     │  └────────────┘  │     ┌──────────────┐
-                     │  ┌────────────┐  │────▶│  Webhooks     │
-                     │  │   Queue    │  │     │  (HMAC+Retry) │
-                     │  │  Engine    │  │     │  + DLQ        │
-                     │  └────────────┘  │     └──────────────┘
-                     │  ┌────────────┐  │
-                     │  │  Error     │  │
-                     │  │  Handler   │  │
-                     │  └────────────┘  │
-                     └──────────────────┘
-```
+![Architecture Diagram](docs/architecture.svg)
 
 ## Quick Start
 

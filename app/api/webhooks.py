@@ -1,11 +1,8 @@
-import json
 import uuid
 from datetime import datetime, timezone
-from pathlib import Path
 
 from fastapi import APIRouter, HTTPException
 
-from app.config import settings
 from app.core.webhook_engine import WebhookEngine
 from app.models import WebhookDelivery, WebhookLogResponse, WebhookRegister, WebhookSubscription
 

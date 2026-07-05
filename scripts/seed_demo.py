@@ -4,7 +4,6 @@ Seed IntegraHub with demo data -- integrations, jobs, webhooks, reports.
 Run: python scripts/seed_demo.py
 """
 
-import json
 import sys
 import uuid
 from datetime import datetime, timezone
@@ -159,12 +158,12 @@ def seed():
         )
         print(f"  [+] Webhook: {wh['description']} -> {wh['url']}")
 
-    print(f"\n[OK] Demo data seeded!")
+    print("\n[OK] Demo data seeded!")
     print(f"     - {len(DEMO_INTEGRATIONS)} integrations")
     print(f"     - {len(DEMO_JOBS)} jobs")
     print(f"     - {len(webhook_data)} webhook subscriptions")
-    print(f"\n     Open http://localhost:8000 to see the results!")
-    print(f"     API docs at http://localhost:8000/docs")
+    print("\n     Open http://localhost:8000 to see the results!")
+    print("     API docs at http://localhost:8000/docs")
 
 
 if __name__ == "__main__":
