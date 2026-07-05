@@ -1,0 +1,1 @@
+{"id": "whsub_90b07ee5f620", "url": "https://hooks.example.com/integrahub", "events": ["job.submitted", "job.completed"], "secret": "c9f0f5dd943142ba9463e1ac61906a96", "description": "Test webhook", "active": true, "created_at": "2026-07-05T09:09:46.721281+00:00"}
