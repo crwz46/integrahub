@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650" font-family="'Segoe UI', -apple-system, monospace">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#2563eb"/></linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#059669"/></linearGradient>
+    <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient>
+    <linearGradient id="g4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+    <linearGradient id="g5" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ef4444"/><stop offset="100%" stop-color="#dc2626"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10" fill="#94a3b8"/></marker>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10" fill="#06b6d4"/></marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="650" fill="#0f172a" rx="12"/>
+  <rect x="15" y="15" width="870" height="620" fill="none" stroke="#1e293b" stroke-width="1" rx="8"/>
+
+  <!-- Title -->
+  <text x="450" y="45" text-anchor="middle" fill="#e2e8f0" font-size="18" font-weight="bold">IntegraHub — Architecture</text>
+
+  <!-- Client Layer -->
+  <rect x="40" y="65" width="180" height="160" rx="8" fill="#1e293b" stroke="#334155" filter="url(#shadow)"/>
+  <text x="130" y="88" text-anchor="middle" fill="#06b6d4" font-size="11" font-weight="bold" letter-spacing="2">CLIENT LAYER</text>
+  <rect x="55" y="100" width="150" height="28" rx="4" fill="#0f172a" stroke="#334155"/>
+  <text x="130" y="118" text-anchor="middle" fill="#cbd5e1" font-size="11">Developer Portal</text>
+  <rect x="55" y="135" width="150" height="28" rx="4" fill="#0f172a" stroke="#334155"/>
+  <text x="130" y="153" text-anchor="middle" fill="#cbd5e1" font-size="11">Postman / curl</text>
+  <rect x="55" y="170" width="150" height="28" rx="4" fill="#0f172a" stroke="#334155"/>
+  <text x="130" y="188" text-anchor="middle" fill="#cbd5e1" font-size="11">External Apps</text>
+
+  <!-- Gateway Layer -->
+  <rect x="360" y="45" width="200" height="40" rx="20" fill="url(#g1)" filter="url(#shadow)"/>
+  <text x="460" y="70" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">INTEGRAHUB GATEWAY</text>
+
+  <!-- Middleware -->
+  <rect x="360" y="95" width="200" height="24" rx="4" fill="#1e293b" stroke="#06b6d4" stroke-width="1"/>
+  <text x="460" y="111" text-anchor="middle" fill="#06b6d4" font-size="9">Rate Limiter · Error Handler · CORS</text>
+
+  <!-- API modules -->
+  <rect x="280" y="130" width="100" height="36" rx="6" fill="#0f172a" stroke="#334155"/>
+  <text x="330" y="145" text-anchor="middle" fill="#e2e8f0" font-size="10">Integrations</text>
+  <text x="330" y="157" text-anchor="middle" fill="#64748b" font-size="8">CRUD + Test</text>
+
+  <rect x="395" y="130" width="100" height="36" rx="6" fill="#0f172a" stroke="#334155"/>
+  <text x="445" y="145" text-anchor="middle" fill="#e2e8f0" font-size="10">Jobs</text>
+  <text x="445" y="157" text-anchor="middle" fill="#64748b" font-size="8">Async + Queue</text>
+
+  <rect x="510" y="130" width="100" height="36" rx="6" fill="#0f172a" stroke="#334155"/>
+  <text x="560" y="145" text-anchor="middle" fill="#e2e8f0" font-size="10">Webhooks</text>
+  <text x="560" y="157" text-anchor="middle" fill="#64748b" font-size="8">HMAC + DLQ</text>
+
+  <!-- Core Engine -->
+  <rect x="360" y="180" width="200" height="24" rx="4" fill="#1e293b" stroke="#334155"/>
+  <text x="460" y="196" text-anchor="middle" fill="#94a3b8" font-size="9">Auth (OAuth2) · API Keys · JWT</text>
+
+  <!-- Engine Box -->
+  <rect x="320" y="215" width="280" height="140" rx="8" fill="#0f172a" stroke="#334155" stroke-dasharray="4,2"/>
+  <text x="460" y="235" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="bold">CORE ENGINE</text>
+
+  <rect x="335" y="248" width="120" height="40" rx="6" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="395" y="265" text-anchor="middle" fill="#fbbf24" font-size="10">Queue Manager</text>
+  <text x="395" y="280" text-anchor="middle" fill="#64748b" font-size="8">Priority + Retry</text>
+
+  <rect x="465" y="248" width="120" height="40" rx="6" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="525" y="265" text-anchor="middle" fill="#fbbf24" font-size="10">Webhook Engine</text>
+  <text x="525" y="280" text-anchor="middle" fill="#64748b" font-size="8">Exp Backoff + DLQ</text>
+
+  <rect x="335" y="298" width="120" height="40" rx="6" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="395" y="315" text-anchor="middle" fill="#fbbf24" font-size="10">Security</text>
+  <text x="395" y="330" text-anchor="middle" fill="#64748b" font-size="8">HMAC · JWT · Keys</text>
+
+  <rect x="465" y="298" width="120" height="40" rx="6" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="525" y="315" text-anchor="middle" fill="#fbbf24" font-size="10">Storage</text>
+  <text x="525" y="330" text-anchor="middle" fill="#64748b" font-size="8">File · Queue · Logs</text>
+
+  <!-- Adapter Layer -->
+  <rect x="40" y="380" width="820" height="100" rx="8" fill="#1e293b" stroke="#334155" filter="url(#shadow)"/>
+  <text x="450" y="402" text-anchor="middle" fill="#10b981" font-size="11" font-weight="bold" letter-spacing="2">ADAPTER LAYER (Pluggable Strategy Pattern)</text>
+  <rect x="55" y="415" width="140" height="46" rx="6" fill="#0f172a" stroke="#10b981"/>
+  <text x="125" y="433" text-anchor="middle" fill="#10b981" font-size="10" font-weight="bold">Workday</text>
+  <text x="125" y="448" text-anchor="middle" fill="#64748b" font-size="8">REST API v36.2</text>
+  <rect x="210" y="415" width="140" height="46" rx="6" fill="#0f172a" stroke="#10b981"/>
+  <text x="280" y="433" text-anchor="middle" fill="#10b981" font-size="10" font-weight="bold">Greenhouse</text>
+  <text x="280" y="448" text-anchor="middle" fill="#64748b" font-size="8">REST API v1</text>
+  <rect x="365" y="415" width="140" height="46" rx="6" fill="#0f172a" stroke="#10b981"/>
+  <text x="435" y="433" text-anchor="middle" fill="#10b981" font-size="10" font-weight="bold">Lever</text>
+  <text x="435" y="448" text-anchor="middle" fill="#64748b" font-size="8">REST API v1</text>
+  <rect x="520" y="415" width="140" height="46" rx="6" fill="#0f172a" stroke="#10b981"/>
+  <text x="590" y="433" text-anchor="middle" fill="#10b981" font-size="10" font-weight="bold">iCIMS</text>
+  <text x="590" y="448" text-anchor="middle" fill="#64748b" font-size="8">REST API v1</text>
+  <rect x="675" y="415" width="170" height="46" rx="6" fill="#0f172a" stroke="#10b981"/>
+  <text x="760" y="433" text-anchor="middle" fill="#10b981" font-size="10" font-weight="bold">Custom API</text>
+  <text x="760" y="448" text-anchor="middle" fill="#64748b" font-size="8">Any REST/HTTP</text>
+
+  <!-- External Layer -->
+  <rect x="40" y="500" width="820" height="100" rx="8" fill="#1e293b" stroke="#334155" filter="url(#shadow)"/>
+  <text x="450" y="522" text-anchor="middle" fill="#ef4444" font-size="11" font-weight="bold" letter-spacing="2">EXTERNAL SYSTEMS</text>
+  <rect x="55" y="535" width="150" height="46" rx="6" fill="#0f172a" stroke="#ef4444"/>
+  <text x="130" y="553" text-anchor="middle" fill="#fca5a5" font-size="10">ATS / HRIS</text>
+  <text x="130" y="568" text-anchor="middle" fill="#64748b" font-size="8">Job Boards · CRM</text>
+  <rect x="220" y="535" width="150" height="46" rx="6" fill="#0f172a" stroke="#ef4444"/>
+  <text x="295" y="553" text-anchor="middle" fill="#fca5a5" font-size="10">Webhook Receivers</text>
+  <text x="295" y="568" text-anchor="middle" fill="#64748b" font-size="8">Slack · Teams · Custom</text>
+  <rect x="385" y="535" width="150" height="46" rx="6" fill="#0f172a" stroke="#ef4444"/>
+  <text x="460" y="553" text-anchor="middle" fill="#fca5a5" font-size="10">File Storage</text>
+  <text x="460" y="568" text-anchor="middle" fill="#64748b" font-size="8">Resumes · Documents</text>
+  <rect x="550" y="535" width="150" height="46" rx="6" fill="#0f172a" stroke="#ef4444"/>
+  <text x="625" y="553" text-anchor="middle" fill="#fca5a5" font-size="10">Monitoring</text>
+  <text x="625" y="568" text-anchor="middle" fill="#64748b" font-size="8">Logs · Metrics · Alerts</text>
+  <rect x="715" y="535" width="130" height="46" rx="6" fill="#0f172a" stroke="#ef4444"/>
+  <text x="780" y="553" text-anchor="middle" fill="#fca5a5" font-size="10">Reporting</text>
+  <text x="780" y="568" text-anchor="middle" fill="#64748b" font-size="8">Analytics · CSV</text>
+
+  <!-- Arrows from Client to Gateway -->
+  <line x1="220" y1="105" x2="358" y2="70" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="220" y1="145" x2="358" y2="80" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Arrows Gateway to Adapters -->
+  <line x1="460" y1="355" x2="125" y2="413" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="460" y1="355" x2="280" y2="413" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="460" y1="355" x2="435" y2="413" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="460" y1="355" x2="590" y2="413" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="460" y1="355" x2="760" y2="413" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Arrows Adapters to External -->
+  <line x1="125" y1="461" x2="130" y2="533" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="280" y1="461" x2="295" y2="533" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="435" y1="461" x2="460" y2="533" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="590" y1="461" x2="625" y2="533" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="760" y1="461" x2="780" y2="533" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Labels -->
+  <text x="290" y="83" fill="#64748b" font-size="9" transform="rotate(-20,290,83)">HTTP/JSON</text>
+  <text x="290" y="123" fill="#64748b" font-size="9" transform="rotate(-20,290,123)">OAuth2 Bearer</text>
+  <text x="550" y="390" fill="#64748b" font-size="9">Pluggable Adapter Interface</text>
+  <text x="550" y="500" fill="#64748b" font-size="9">REST APIs · Webhooks</text>
+
+  <!-- Legend -->
+  <rect x="600" y="605" width="12" height="12" rx="2" fill="#06b6d4"/>
+  <text x="618" y="615" fill="#94a3b8" font-size="9">Gateway</text>
+  <rect x="680" y="605" width="12" height="12" rx="2" fill="#10b981"/>
+  <text x="698" y="615" fill="#94a3b8" font-size="9">Adapters</text>
+  <rect x="760" y="605" width="12" height="12" rx="2" fill="#ef4444"/>
+  <text x="778" y="615" fill="#94a3b8" font-size="9">External</text>
+</svg>

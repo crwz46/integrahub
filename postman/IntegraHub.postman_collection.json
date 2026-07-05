@@ -1,0 +1,444 @@
+{
+	"info": {
+		"name": "IntegraHub API",
+		"description": "Enterprise API Integration Gateway — Connect, Orchestrate, Monitor\n\n## Authentication\n\nThis collection uses OAuth2 Client Credentials flow.\n1. Create an integration via `POST /integrations` to get `client_id` and `client_secret`\n2. Or set `client_id` and `client_secret` in the environment variables\n3. The pre-request script will auto-fetch a token before each request\n\n## Base URL\n\nLocal: http://localhost:8000\nDocker: http://localhost:8000",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "integrahub"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"description": "Authentication endpoints — OAuth2 Client Credentials & API Keys",
+			"item": [
+				{
+					"name": "Get Access Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set('token', jsonData.access_token);",
+									"console.log('Token set: ' + jsonData.access_token.substring(0, 20) + '...');"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"client_id\": \"{{client_id}}\",\n    \"client_secret\": \"{{client_secret}}\",\n    \"grant_type\": \"client_credentials\"\n}"
+						},
+						"url": {"raw": "{{base_url}}/auth/token", "host": ["{{base_url}}"], "path": ["auth", "token"]}
+					}
+				},
+				{
+					"name": "Create API Key",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": "My API Key",\n    \"scopes\": [\"integrations:read\", \"integrations:write\", \"jobs:read\", \"jobs:write\"]\n}"
+						},
+						"url": {"raw": "{{base_url}}/auth/api-keys", "host": ["{{base_url}}"], "path": ["auth", "api-keys"]}
+					}
+				},
+				{
+					"name": "List API Keys",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/auth/api-keys", "host": ["{{base_url}}"], "path": ["auth", "api-keys"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "Integrations",
+			"description": "Manage ATS/HRIS integrations — CRUD + test connection",
+			"item": [
+				{
+					"name": "List Providers",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/integrations/providers/list", "host": ["{{base_url}}"], "path": ["integrations", "providers", "list"]}
+					}
+				},
+				{
+					"name": "Create Integration",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": "Production Workday",\n    \"provider\": \"workday\",\n    \"api_base_url\": \"https://api.workday.com/v1\",\n    \"api_version\": \"v1\",\n    \"config\": {\n        \"tenant\": \"acme_corp\",\n        \"rate_limit\": 100\n    }\n}"
+						},
+						"url": {"raw": "{{base_url}}/integrations", "host": ["{{base_url}}"], "path": ["integrations"]}
+					}
+				},
+				{
+					"name": "List Integrations",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/integrations", "host": ["{{base_url}}"], "path": ["integrations"]}
+					}
+				},
+				{
+					"name": "Get Integration",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/integrations/{{integration_id}}", "host": ["{{base_url}}"], "path": ["integrations", "{{integration_id}}"]}
+					}
+				},
+				{
+					"name": "Update Integration",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name": "Updated Workday",\n    \"config\": {\n        \"rate_limit\": 200\n    }\n}"
+						},
+						"url": {"raw": "{{base_url}}/integrations/{{integration_id}}", "host": ["{{base_url}}"], "path": ["integrations", "{{integration_id}}"]}
+					}
+				},
+				{
+					"name": "Test Connection",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/integrations/{{integration_id}}/test", "host": ["{{base_url}}"], "path": ["integrations", "{{integration_id}}", "test"]}
+					}
+				},
+				{
+					"name": "Delete Integration",
+					"request": {
+						"method": "DELETE",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/integrations/{{integration_id}}", "host": ["{{base_url}}"], "path": ["integrations", "{{integration_id}}"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "Jobs",
+			"description": "Submit and manage async integration jobs",
+			"item": [
+				{
+					"name": "Submit Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"integration_id\": \"{{integration_id}}\",\n    \"payload\": {\n        \"title\": \"Senior Backend Engineer\",\n        \"location\": \"Jakarta\",\n        \"department\": \"Engineering\",\n        \"employment_type\": \"full-time\"\n    },\n    \"priority\": 0\n}"
+						},
+						"url": {"raw": "{{base_url}}/jobs", "host": ["{{base_url}}"], "path": ["jobs"]}
+					}
+				},
+				{
+					"name": "List Jobs",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/jobs?page=1&page_size=20", "host": ["{{base_url}}"], "path": ["jobs"], "query": [{"key": "page", "value": "1"}, {"key": "page_size", "value": "20"}]}
+					}
+				},
+				{
+					"name": "Get Job Status",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/jobs/{{job_id}}", "host": ["{{base_url}}"], "path": ["jobs", "{{job_id}}"]}
+					}
+				},
+				{
+					"name": "Retry Failed Job",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/jobs/{{job_id}}/retry", "host": ["{{base_url}}"], "path": ["jobs", "{{job_id}}", "retry"]}
+					}
+				},
+				{
+					"name": "Queue Stats",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/jobs/stats/queue", "host": ["{{base_url}}"], "path": ["jobs", "stats", "queue"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "Webhooks",
+			"description": "Webhook subscription management, delivery logs, and dead-letter queue",
+			"item": [
+				{
+					"name": "Register Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"url\": \"https://hooks.example.com/integrahub\",\n    \"events\": [\n        \"job.submitted\",\n        \"job.completed\",\n        \"job.failed\",\n        \"status.changed\"\n    ],\n    \"description\": \"Production webhook receiver\"\n}"
+						},
+						"url": {"raw": "{{base_url}}/webhooks/register", "host": ["{{base_url}}"], "path": ["webhooks", "register"]}
+					}
+				},
+				{
+					"name": "List Subscriptions",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/webhooks/subscriptions", "host": ["{{base_url}}"], "path": ["webhooks", "subscriptions"]}
+					}
+				},
+				{
+					"name": "Delete Subscription",
+					"request": {
+						"method": "DELETE",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/webhooks/subscriptions/{{subscription_id}}", "host": ["{{base_url}}"], "path": ["webhooks", "subscriptions", "{{subscription_id}}"]}
+					}
+				},
+				{
+					"name": "Delivery Logs",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/webhooks/deliveries", "host": ["{{base_url}}"], "path": ["webhooks", "deliveries"]}
+					}
+				},
+				{
+					"name": "Test Webhook",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/webhooks/{{subscription_id}}/test", "host": ["{{base_url}}"], "path": ["webhooks", "{{subscription_id}}", "test"]}
+					}
+				},
+				{
+					"name": "Dead-Letter Queue",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/webhooks/dlq", "host": ["{{base_url}}"], "path": ["webhooks", "dlq"]}
+					}
+				},
+				{
+					"name": "Replay from DLQ",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/webhooks/dlq/{{delivery_id}}/replay", "host": ["{{base_url}}"], "path": ["webhooks", "dlq", "{{delivery_id}}", "replay"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"description": "Generate and retrieve integration analytics reports",
+			"item": [
+				{
+					"name": "Generate Report",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"integration_id\": \"{{integration_id}}\",\n    \"format\": \"json\"\n}"
+						},
+						"url": {"raw": "{{base_url}}/reports", "host": ["{{base_url}}"], "path": ["reports"]}
+					}
+				},
+				{
+					"name": "List Reports",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/reports", "host": ["{{base_url}}"], "path": ["reports"]}
+					}
+				},
+				{
+					"name": "Get Report",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/reports/{{report_id}}", "host": ["{{base_url}}"], "path": ["reports", "{{report_id}}"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "Files",
+			"description": "File upload and download with pre-signed URLs",
+			"item": [
+				{
+					"name": "Upload File",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"body": {
+							"mode": "formdata",
+							"formdata": [{"key": "file", "type": "file", "src": ""}]
+						},
+						"url": {"raw": "{{base_url}}/files/upload", "host": ["{{base_url}}"], "path": ["files", "upload"]}
+					}
+				},
+				{
+					"name": "Get File Info",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/files/{{file_id}}", "host": ["{{base_url}}"], "path": ["files", "{{file_id}}"]}
+					}
+				},
+				{
+					"name": "Download File",
+					"request": {
+						"method": "GET",
+						"header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+						"url": {"raw": "{{base_url}}/files/download/{{file_id}}", "host": ["{{base_url}}"], "path": ["files", "download", "{{file_id}}"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "System",
+			"description": "Health check and system information",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{base_url}}/health", "host": ["{{base_url}}"], "path": ["health"]}
+					}
+				},
+				{
+					"name": "OpenAPI Spec",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{base_url}}/openapi.json", "host": ["{{base_url}}"], "path": ["openapi.json"]}
+					}
+				},
+				{
+					"name": "Developer Portal",
+					"request": {
+						"method": "GET",
+						"url": {"raw": "{{base_url}}/", "host": ["{{base_url}}"]}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"exec": [
+					"// Auto-fetch token if not set or expired",
+					"var token = pm.collectionVariables.get('token');",
+					"var clientId = pm.collectionVariables.get('client_id');",
+					"var clientSecret = pm.collectionVariables.get('client_secret');",
+					"",
+					"if ((!token || token === '') && clientId && clientSecret) {",
+					"    pm.sendRequest({",
+					"        url: pm.collectionVariables.get('base_url') + '/auth/token',",
+					"        method: 'POST',",
+					"        header: {'Content-Type': 'application/json'},",
+					"        body: {",
+					"            mode: 'raw',",
+					"            raw: JSON.stringify({",
+					"                client_id: clientId,",
+					"                client_secret: clientSecret,",
+					"                grant_type: 'client_credentials'",
+					"            })",
+					"        }",
+					"    }, function(err, res) {",
+					"        if (res && res.code === 200) {",
+					"            pm.collectionVariables.set('token', res.json().access_token);",
+					"        }",
+					"    });",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "default"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "client_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "client_secret",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "integration_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "job_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "subscription_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "delivery_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "report_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "file_id",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
