@@ -1,22 +1,22 @@
 """
-Seed IntegraHub with demo data — integrations, jobs, webhooks, reports.
+Seed IntegraHub with demo data -- integrations, jobs, webhooks, reports.
 
 Run: python scripts/seed_demo.py
 """
 
-import asyncio
 import json
-import os
 import sys
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app.api.integrations import _save
 from app.api.jobs import _save_job, queue
-from app.api.reports import _save_report
 from app.core.security import generate_client_credentials
-from app.models import IntegrationStatus, JobStatus
+from app.core.webhook_engine import WebhookEngine
+from app.models import IntegrationStatus
 
 DEMO_INTEGRATIONS = [
     {
@@ -86,15 +86,11 @@ DEMO_JOBS = [
 
 
 def seed():
-    from datetime import datetime, timezone
-    import uuid
-
     now = datetime.now(timezone.utc).isoformat()
     integration_ids = []
 
-    print("🌱 Seeding IntegraHub demo data...\n")
+    print("[Seed] Seeding IntegraHub demo data...\n")
 
-    # Seed integrations
     for idx, int_data in enumerate(DEMO_INTEGRATIONS):
         int_id = f"int_demo_{uuid.uuid4().hex[:12]}"
         client_id, client_secret = generate_client_credentials()
@@ -113,9 +109,8 @@ def seed():
         }
         _save(integration)
         integration_ids.append(int_id)
-        print(f"  ✅ Integration: {int_data['name']} ({int_data['provider']})")
+        print(f"  [+] Integration: {int_data['name']} ({int_data['provider']})")
 
-    # Seed jobs
     statuses = ["completed", "completed", "completed", "completed", "failed"]
     for idx, job_data in enumerate(DEMO_JOBS):
         int_id = integration_ids[idx % len(integration_ids)]
@@ -140,9 +135,8 @@ def seed():
         }
         _save_job(job)
         queue.enqueue("ats_job", {"job_id": job_id, "integration_id": int_id})
-        print(f"  ✅ Job: {job_data['title']} — {job['status']}")
+        print(f"  [+] Job: {job_data['title']} -- {job['status']}")
 
-    # Seed webhook subscriptions
     webhook_data = [
         {
             "url": "https://hooks.acme.com/integrahub/jobs",
@@ -155,23 +149,22 @@ def seed():
             "description": "Status change notifications",
         },
     ]
-    from app.core.webhook_engine import WebhookEngine
     engine = WebhookEngine()
     for wh in webhook_data:
-        sub = engine.register_subscription(
+        engine.register_subscription(
             url=wh["url"],
             events=wh["events"],
             secret="whsec_demo_secret_123",
             description=wh["description"],
         )
-        print(f"  ✅ Webhook: {wh['description']} → {wh['url']}")
+        print(f"  [+] Webhook: {wh['description']} -> {wh['url']}")
 
-    print(f"\n✅ Demo data seeded!")
-    print(f"   • {len(DEMO_INTEGRATIONS)} integrations")
-    print(f"   • {len(DEMO_JOBS)} jobs")
-    print(f"   • {len(webhook_data)} webhook subscriptions")
-    print(f"\n   Open http://localhost:8000 to see the results!")
-    print(f"   API docs at http://localhost:8000/docs")
+    print(f"\n[OK] Demo data seeded!")
+    print(f"     - {len(DEMO_INTEGRATIONS)} integrations")
+    print(f"     - {len(DEMO_JOBS)} jobs")
+    print(f"     - {len(webhook_data)} webhook subscriptions")
+    print(f"\n     Open http://localhost:8000 to see the results!")
+    print(f"     API docs at http://localhost:8000/docs")
 
 
 if __name__ == "__main__":
